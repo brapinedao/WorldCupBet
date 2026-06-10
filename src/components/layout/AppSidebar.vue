@@ -49,6 +49,7 @@ const navItems = [
   { name: 'Predictions', label: 'Predicciones' },
   { name: 'Groups', label: 'Equipos y Grupos' },
   { name: 'Ranking', label: 'Ranking' },
+  { name: 'Premios', label: 'Premios' },
 ] as const
 
 const handleLogout = (): void => {

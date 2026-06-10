@@ -37,6 +37,11 @@ const router = createRouter({
           name: 'Ranking',
           component: () => import('@/views/rankings/Rankings.vue'),
         },
+        {
+          path: 'premios',
+          name: 'Premios',
+          component: () => import('@/views/premios/Premios.vue'),
+        },
       ],
     },
   ],

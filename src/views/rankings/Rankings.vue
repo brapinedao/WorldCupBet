@@ -1,6 +1,9 @@
 <template>
   <div class="flex flex-col gap-6">
-    <h1 class="text-2xl font-bold">Ranking</h1>
+    <div class="flex items-center justify-between gap-4">
+      <h1 class="text-2xl font-bold">Ranking</h1>
+      <BaseButton variant="glass" @click="isRulesModalOpen = true">Reglas de puntos</BaseButton>
+    </div>
 
     <p v-if="isLoading" class="text-center text-white/60">Cargando ranking...</p>
 
@@ -40,7 +43,7 @@
       <BaseInput
         v-model="searchQuery"
         placeholder="Buscar usuario para ver su posición"
-        class="sm:max-w-xs"
+        class="w-full"
       />
 
       <GlassCard v-if="filteredRankings.length > 0" class="flex flex-col">
@@ -65,14 +68,30 @@
     </template>
 
     <p v-else class="text-center text-white/60">Todavía no hay usuarios registrados.</p>
+
+    <BaseModal v-model="isRulesModalOpen" title="Reglas de puntos">
+      <ul class="flex flex-col gap-5">
+        <li v-for="rule in pointsRules" :key="rule.points" class="flex items-center gap-4">
+          <span
+            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gold-cta text-sm font-bold text-navy-950"
+          >
+            +{{ rule.points }}
+          </span>
+          <span class="text-sm leading-relaxed text-white/80">{{ rule.description }}</span>
+        </li>
+      </ul>
+    </BaseModal>
   </div>
 </template>
 
 <script setup lang="ts">
+import BaseButton from '@/components/ui/BaseButton.vue'
 import BaseInput from '@/components/ui/BaseInput.vue'
+import BaseModal from '@/components/ui/BaseModal.vue'
 import GlassCard from '@/components/ui/GlassCard.vue'
 
 import useRankingsView from './Rankings'
 
-const { podium, filteredRankings, searchQuery, isLoading } = useRankingsView()
+const { podium, filteredRankings, searchQuery, isLoading, isRulesModalOpen, pointsRules } =
+  useRankingsView()
 </script>

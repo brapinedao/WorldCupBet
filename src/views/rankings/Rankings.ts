@@ -3,6 +3,17 @@ import { storeToRefs } from 'pinia'
 
 import { useRankingsStore } from '@/stores/rankings/rankings'
 
+const POINTS_RULES = [
+  { points: 5, description: 'Aciertas el marcador exacto del partido.' },
+  {
+    points: 3,
+    description:
+      'Aciertas el resultado (gana el local, empate o gana el visitante) sin el marcador exacto.',
+  },
+  { points: 1, description: 'Tu pronóstico no acierta el resultado del partido.' },
+  { points: 0, description: 'No guardaste un pronóstico para ese partido.' },
+] as const
+
 const useRankingsView = () => {
   const rankingsStore = useRankingsStore()
   const { rankings } = storeToRefs(rankingsStore)
@@ -10,6 +21,7 @@ const useRankingsView = () => {
 
   const isLoading = ref(true)
   const searchQuery = ref('')
+  const isRulesModalOpen = ref(false)
 
   const rankingsWithPosition = computed(() =>
     rankings.value.map((ranking, index) => ({ ...ranking, position: index + 1 })),
@@ -37,6 +49,8 @@ const useRankingsView = () => {
     filteredRankings,
     searchQuery,
     isLoading,
+    isRulesModalOpen,
+    pointsRules: POINTS_RULES,
   }
 }
 

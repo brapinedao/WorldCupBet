@@ -6,7 +6,7 @@ export const useUsers = () => {
     try {
       const { data, error } = await supabase
         .from('users')
-        .select('id, name')
+        .select('id, name, display_name')
         .eq('name', name)
         .maybeSingle()
 

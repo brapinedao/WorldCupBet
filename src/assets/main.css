@@ -18,6 +18,102 @@
     #060c1f 100%
   );
   --background-image-gold-cta: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+
+  --animate-player-kick: player-kick 4s ease-in-out infinite;
+  --animate-leg-swing: leg-swing 4s ease-in-out infinite;
+  --animate-arm-swing: arm-swing 4s ease-in-out infinite;
+  --animate-kick-ball: kick-ball 4s ease-in-out infinite;
+}
+
+@keyframes player-kick {
+  0%,
+  28% {
+    transform: rotate(0deg) translateY(0);
+  }
+  38% {
+    transform: rotate(4deg) translateY(2px);
+  }
+  52% {
+    transform: rotate(-6deg) translateY(-2px);
+  }
+  65%,
+  100% {
+    transform: rotate(0deg) translateY(0);
+  }
+}
+
+@keyframes leg-swing {
+  0%,
+  28% {
+    transform: rotate(0deg);
+  }
+  38% {
+    transform: rotate(18deg);
+  }
+  52% {
+    transform: rotate(-85deg);
+  }
+  65% {
+    transform: rotate(-10deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes arm-swing {
+  0%,
+  28% {
+    transform: rotate(0deg);
+  }
+  38% {
+    transform: rotate(-8deg);
+  }
+  52% {
+    transform: rotate(40deg);
+  }
+  65% {
+    transform: rotate(12deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes kick-ball {
+  0%,
+  50% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  60% {
+    transform: translate(50px, -55px) rotate(200deg);
+    opacity: 1;
+  }
+  80% {
+    transform: translate(130vw, -55vw) rotate(900deg);
+    opacity: 1;
+  }
+  81% {
+    opacity: 0;
+  }
+  99% {
+    transform: translate(0, 0) rotate(720deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(0, 0) rotate(720deg);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-player-kick,
+  .animate-leg-swing,
+  .animate-arm-swing,
+  .animate-kick-ball {
+    animation: none;
+  }
 }
 
 @layer base {

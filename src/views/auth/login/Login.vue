@@ -24,20 +24,67 @@
 
       <div class="relative z-10 flex w-full max-w-sm flex-col items-center gap-8 text-center">
         <div class="flex flex-col items-center gap-3">
-          <div
-            class="flex h-14 w-14 items-center justify-center rounded-full bg-gold-cta text-navy-950 shadow-lg shadow-gold-500/30"
-          >
-            <svg viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="HP" class="h-9 w-9">
+          <div class="flex items-end justify-center gap-2">
+            <svg
+              viewBox="0 0 100 100"
+              class="animate-player-kick h-24 w-24 origin-bottom"
+              aria-hidden="true"
+            >
+              <g
+                fill="none"
+                stroke="white"
+                stroke-width="9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M40 26 L46 54" />
+                <path d="M40 28 L50 42 L60 50" />
+                <path d="M46 54 L42 74 L40 90" />
+              </g>
+              <circle cx="40" cy="16" r="10" fill="#ffd166" />
               <path
-                d="M12 24h-.4l2.5-6.7h3.4c.6 0 1.2-.5 1.4-1L21.6 9c.4-1.2-.3-2.2-1.5-2.2h-4.7l-3.9 10.8-2.2 6.1C3.9 22.4 0 17.7 0 12 0 6.5 3.7 1.9 8.8.4L6.5 6.8 2.6 17.3h2.5l3.2-8.9h1.9L7 17.3h2.5l3-8.3c.4-1.2-.2-2.2-1.5-2.2H9L11.5 0h.5c6.6 0 12 5.4 12 12s-5.4 12-12 12zm7.3-15.7h-1.9l-2.7 7.3h1.9l2.7-7.3z"
+                class="animate-arm-swing"
+                style="transform-origin: 40px 28px"
+                d="M40 28 L30 46 L24 60"
+                fill="none"
+                stroke="white"
+                stroke-width="9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                class="animate-leg-swing"
+                style="transform-origin: 46px 54px"
+                d="M46 54 L54 74 L58 90"
+                fill="none"
+                stroke="white"
+                stroke-width="9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
               />
             </svg>
+
+            <div
+              class="animate-kick-ball flex h-14 w-14 items-center justify-center rounded-full bg-gold-cta text-navy-950 shadow-lg shadow-gold-500/30"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                role="img"
+                aria-label="HP"
+                class="h-9 w-9"
+              >
+                <path
+                  d="M12 24h-.4l2.5-6.7h3.4c.6 0 1.2-.5 1.4-1L21.6 9c.4-1.2-.3-2.2-1.5-2.2h-4.7l-3.9 10.8-2.2 6.1C3.9 22.4 0 17.7 0 12 0 6.5 3.7 1.9 8.8.4L6.5 6.8 2.6 17.3h2.5l3.2-8.9h1.9L7 17.3h2.5l3-8.3c.4-1.2-.2-2.2-1.5-2.2H9L11.5 0h.5c6.6 0 12 5.4 12 12s-5.4 12-12 12zm7.3-15.7h-1.9l-2.7 7.3h1.9l2.7-7.3z"
+                />
+              </svg>
+            </div>
           </div>
           <div class="flex flex-col gap-2">
             <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
               🏆 HP World Cup <span class="bg-gold-cta bg-clip-text text-transparent">2026</span>
             </h1>
-            <p class="text-sm text-white/60">Internal access for HP team</p>
+            <p class="text-sm text-white/60">Internal access for HP AMS Team</p>
           </div>
         </div>
 

@@ -1,0 +1,33 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-navy-950: #060c1f;
+  --color-navy-900: #0a1530;
+  --color-navy-800: #102145;
+  --color-navy-700: #16305e;
+  --color-navy-600: #1d3f78;
+
+  --color-gold-400: #ffd166;
+  --color-gold-500: #fbbf24;
+  --color-gold-600: #f59e0b;
+
+  --background-image-navy-radial: radial-gradient(
+    circle at 30% 20%,
+    #16305e 0%,
+    #0a1530 55%,
+    #060c1f 100%
+  );
+  --background-image-gold-cta: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+@layer base {
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}

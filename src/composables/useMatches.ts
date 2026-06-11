@@ -15,6 +15,13 @@ const MATCH_SELECT = `
   away_team:teams!away_team_id(id, name, code, flag_url)
 `
 
+export interface IUpdateMatchResultPayload {
+  matchId: number
+  homeScore: number
+  awayScore: number
+  winnerTeamId: number | null
+}
+
 export const useMatches = () => {
   const fetchMatches = async (): Promise<IMatch[]> => {
     try {
@@ -31,5 +38,24 @@ export const useMatches = () => {
     }
   }
 
-  return { fetchMatches }
+  const updateMatchResult = async (payload: IUpdateMatchResultPayload): Promise<boolean> => {
+    try {
+      const { data, error } = await supabase
+        .from('matches')
+        .update({
+          home_score: payload.homeScore,
+          away_score: payload.awayScore,
+          winner_team_id: payload.winnerTeamId,
+          status: 'finished',
+        })
+        .eq('id', payload.matchId)
+        .select('id')
+
+      return !error && !!data && data.length > 0
+    } catch {
+      return false
+    }
+  }
+
+  return { fetchMatches, updateMatchResult }
 }

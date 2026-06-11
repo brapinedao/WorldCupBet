@@ -5,6 +5,7 @@ import { useAuthStore } from '@/stores/auth/auth'
 declare module 'vue-router' {
   interface RouteMeta {
     requiresAuth?: boolean
+    allowedUsernames?: string[]
   }
 }
 
@@ -47,6 +48,12 @@ const router = createRouter({
           name: 'AllPredictions',
           component: () => import('@/views/all-predictions/AllPredictions.vue'),
         },
+        {
+          path: 'resultados',
+          name: 'MatchResults',
+          component: () => import('@/views/match-results/MatchResults.vue'),
+          meta: { allowedUsernames: ['brianpineda19', 'fabiovelazco'] },
+        },
       ],
     },
   ],
@@ -61,6 +68,10 @@ router.beforeEach((to) => {
   }
 
   if (to.name === 'Login' && isAuthenticated) {
+    return { name: 'Predictions' }
+  }
+
+  if (to.meta.allowedUsernames && !to.meta.allowedUsernames.includes(authStore.username)) {
     return { name: 'Predictions' }
   }
 })

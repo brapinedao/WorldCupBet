@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase'
-import type { IPrediction } from '@/interfaces/customs/predictions/Predictions'
+import type { IPrediction, IUserPrediction } from '@/interfaces/customs/predictions/Predictions'
 
 export interface IUpsertPredictionPayload {
   userId: number
@@ -24,6 +24,21 @@ export const usePredictions = () => {
     }
   }
 
+  const fetchPredictionsByMatch = async (matchId: number): Promise<IUserPrediction[]> => {
+    try {
+      const { data, error } = await supabase
+        .from('predictions')
+        .select('predicted_home_score, predicted_away_score, user:users(display_name)')
+        .eq('match_id', matchId)
+
+      if (error || !data) return []
+
+      return data as unknown as IUserPrediction[]
+    } catch {
+      return []
+    }
+  }
+
   const upsertPrediction = async (payload: IUpsertPredictionPayload): Promise<boolean> => {
     try {
       const { error } = await supabase.from('predictions').upsert(
@@ -43,5 +58,5 @@ export const usePredictions = () => {
     }
   }
 
-  return { fetchPredictionsByUser, upsertPrediction }
+  return { fetchPredictionsByUser, fetchPredictionsByMatch, upsertPrediction }
 }

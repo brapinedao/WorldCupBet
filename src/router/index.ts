@@ -42,6 +42,11 @@ const router = createRouter({
           name: 'Premios',
           component: () => import('@/views/premios/Premios.vue'),
         },
+        {
+          path: 'pronosticos-todos',
+          name: 'AllPredictions',
+          component: () => import('@/views/all-predictions/AllPredictions.vue'),
+        },
       ],
     },
   ],

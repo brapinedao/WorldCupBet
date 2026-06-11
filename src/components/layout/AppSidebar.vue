@@ -47,6 +47,7 @@ const { _clearUser } = authStore
 
 const navItems = [
   { name: 'Predictions', label: 'Predicciones' },
+  { name: 'AllPredictions', label: 'Pronósticos de Todos' },
   { name: 'Groups', label: 'Equipos y Grupos' },
   { name: 'Ranking', label: 'Ranking' },
   { name: 'Premios', label: 'Premios' },

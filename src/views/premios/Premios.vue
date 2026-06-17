@@ -28,7 +28,7 @@
       </p>
 
       <div
-        v-if="areStatsRevealed"
+        v-if="isFirstPlaceRevealed"
         class="animate-fade-up flex flex-wrap justify-center gap-8"
         style="animation-delay: 0.3s"
       >
@@ -96,6 +96,7 @@
 
     <!-- Nota -->
     <GlassCard
+      v-if="isFirstPlaceRevealed"
       class="animate-fade-up border-gold-400/15 p-5 text-center text-sm leading-relaxed text-white/70"
       style="animation-delay: 0.85s"
     >
@@ -126,5 +127,5 @@ import GlassCard from '@/components/ui/GlassCard.vue'
 
 import usePremios from './Premios'
 
-const { prizes, stats, areStatsRevealed, handleGoToPredictions } = usePremios()
+const { prizes, stats, isFirstPlaceRevealed, handleGoToPredictions } = usePremios()
 </script>

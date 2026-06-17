@@ -67,7 +67,7 @@ const usePremios = () => {
     })),
   )
 
-  const areStatsRevealed = now >= FIRST_PLACE_REVEAL_AT.getTime()
+  const isFirstPlaceRevealed = now >= FIRST_PLACE_REVEAL_AT.getTime()
 
   const handleGoToPredictions = (): void => {
     router.push({ name: 'Predictions' })
@@ -76,7 +76,7 @@ const usePremios = () => {
   return {
     prizes,
     stats: STATS,
-    areStatsRevealed,
+    isFirstPlaceRevealed,
     handleGoToPredictions,
   }
 }

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 
 import { usePredictions, type IUpsertPredictionPayload } from '@/composables/usePredictions'
-import type { IPrediction, IUserPrediction } from '@/interfaces/customs/predictions/Predictions'
+import type { IAuditMatch, IPrediction, IUserPrediction } from '@/interfaces/customs/predictions/Predictions'
 
 interface IPredictionsState {
   predictions: IPrediction[]
@@ -24,6 +24,11 @@ export const usePredictionsStore = defineStore('predictions', {
       const { fetchPredictionsByMatch } = usePredictions()
       this.matchPredictions = await fetchPredictionsByMatch(matchId)
       return true
+    },
+
+    async _getAuditPredictions(): Promise<IAuditMatch[]> {
+      const { fetchAuditData } = usePredictions()
+      return fetchAuditData()
     },
 
     async _updatePrediction(payload: IUpsertPredictionPayload): Promise<boolean> {

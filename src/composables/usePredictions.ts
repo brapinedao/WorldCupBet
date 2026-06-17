@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase'
-import type { IPrediction, IUserPrediction } from '@/interfaces/customs/predictions/Predictions'
+import type { IAuditMatch, IPrediction, IUserPrediction } from '@/interfaces/customs/predictions/Predictions'
 
 export interface IUpsertPredictionPayload {
   userId: number
@@ -58,5 +58,35 @@ export const usePredictions = () => {
     }
   }
 
-  return { fetchPredictionsByUser, fetchPredictionsByMatch, upsertPrediction }
+  const fetchAuditData = async (): Promise<IAuditMatch[]> => {
+    try {
+      const { data, error } = await supabase
+        .from('matches')
+        .select(`
+          id,
+          match_date,
+          home_score,
+          away_score,
+          home_team:teams!home_team_id(name),
+          away_team:teams!away_team_id(name),
+          predictions(
+            predicted_home_score,
+            predicted_away_score,
+            points,
+            updated_at,
+            user:users(display_name)
+          )
+        `)
+        .eq('status', 'finished')
+        .order('match_date', { ascending: true })
+
+      if (error || !data) return []
+
+      return data as unknown as IAuditMatch[]
+    } catch {
+      return []
+    }
+  }
+
+  return { fetchPredictionsByUser, fetchPredictionsByMatch, upsertPrediction, fetchAuditData }
 }

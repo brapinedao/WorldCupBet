@@ -1,6 +1,9 @@
 <template>
   <div class="mx-auto flex max-w-2xl flex-col gap-6">
-    <h1 class="text-2xl font-bold">Pronósticos de Todos</h1>
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-bold">Pronósticos de Todos</h1>
+      <BaseButton :loading="isGeneratingAudit" @click="handleAuditDownload">Auditoría</BaseButton>
+    </div>
 
     <p v-if="isLoading" class="text-center text-white/60">Cargando pronósticos...</p>
 
@@ -52,7 +55,8 @@ import BaseInput from '@/components/ui/BaseInput.vue'
 import GlassCard from '@/components/ui/GlassCard.vue'
 import MatchCard from '@/components/ui/MatchCard.vue'
 
+import BaseButton from '@/components/ui/BaseButton.vue'
 import useAllPredictionsView from './AllPredictions'
 
-const { nextMatch, predictions, hasPredictions, searchQuery, isLoading } = useAllPredictionsView()
+const { nextMatch, predictions, hasPredictions, searchQuery, isLoading, isGeneratingAudit, handleAuditDownload } = useAllPredictionsView()
 </script>

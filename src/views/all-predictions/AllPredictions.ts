@@ -22,15 +22,20 @@ const formatUpdatedAt = (iso: string | null): string => {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
-const sanitizeSheetName = (name: string): string =>
-  name.replace(/[\\/*[\]:?]/g, '').slice(0, 31)
+const sanitizeSheetName = (name: string): string => name.replace(/[\\/*[\]:?]/g, '').slice(0, 31)
 
 const buildAuditWorkbook = async (finishedMatches: IAuditMatch[]) => {
   const XLSX = await import('xlsx')
 
   const userMap = new Map<
     string,
-    { match: IAuditMatch; predicted_home: number; predicted_away: number; points: number | null; updated_at: string | null }[]
+    {
+      match: IAuditMatch
+      predicted_home: number
+      predicted_away: number
+      points: number | null
+      updated_at: string | null
+    }[]
   >()
 
   for (const match of finishedMatches) {

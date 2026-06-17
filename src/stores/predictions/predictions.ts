@@ -1,7 +1,11 @@
 import { defineStore } from 'pinia'
 
 import { usePredictions, type IUpsertPredictionPayload } from '@/composables/usePredictions'
-import type { IAuditMatch, IPrediction, IUserPrediction } from '@/interfaces/customs/predictions/Predictions'
+import type {
+  IAuditMatch,
+  IPrediction,
+  IUserPrediction,
+} from '@/interfaces/customs/predictions/Predictions'
 
 interface IPredictionsState {
   predictions: IPrediction[]

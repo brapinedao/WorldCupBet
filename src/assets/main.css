@@ -23,6 +23,10 @@
   --animate-leg-swing: leg-swing 4s ease-in-out infinite;
   --animate-arm-swing: arm-swing 4s ease-in-out infinite;
   --animate-kick-ball: kick-ball 4s ease-in-out infinite;
+
+  --animate-fade-up: fade-up 0.7s ease-out both;
+  --animate-glow-pulse: glow-pulse 2.6s ease-in-out infinite;
+  --animate-float: float 3s ease-in-out infinite;
 }
 
 @keyframes player-kick {
@@ -107,11 +111,45 @@
   }
 }
 
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 20px 0 rgba(251, 191, 36, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 40px 8px rgba(251, 191, 36, 0.55);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-player-kick,
   .animate-leg-swing,
   .animate-arm-swing,
-  .animate-kick-ball {
+  .animate-kick-ball,
+  .animate-fade-up,
+  .animate-glow-pulse,
+  .animate-float {
     animation: none;
   }
 }

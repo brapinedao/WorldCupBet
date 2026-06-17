@@ -51,12 +51,20 @@
 </template>
 
 <script setup lang="ts">
+import BaseButton from '@/components/ui/BaseButton.vue'
 import BaseInput from '@/components/ui/BaseInput.vue'
 import GlassCard from '@/components/ui/GlassCard.vue'
 import MatchCard from '@/components/ui/MatchCard.vue'
 
-import BaseButton from '@/components/ui/BaseButton.vue'
 import useAllPredictionsView from './AllPredictions'
 
-const { nextMatch, predictions, hasPredictions, searchQuery, isLoading, isGeneratingAudit, handleAuditDownload } = useAllPredictionsView()
+const {
+  nextMatch,
+  predictions,
+  hasPredictions,
+  searchQuery,
+  isLoading,
+  isGeneratingAudit,
+  handleAuditDownload,
+} = useAllPredictionsView()
 </script>

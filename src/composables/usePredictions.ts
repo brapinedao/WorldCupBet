@@ -1,5 +1,9 @@
 import { supabase } from '@/lib/supabase'
-import type { IAuditMatch, IPrediction, IUserPrediction } from '@/interfaces/customs/predictions/Predictions'
+import type {
+  IAuditMatch,
+  IPrediction,
+  IUserPrediction,
+} from '@/interfaces/customs/predictions/Predictions'
 
 export interface IUpsertPredictionPayload {
   userId: number
@@ -62,7 +66,8 @@ export const usePredictions = () => {
     try {
       const { data, error } = await supabase
         .from('matches')
-        .select(`
+        .select(
+          `
           id,
           match_date,
           home_score,
@@ -76,7 +81,8 @@ export const usePredictions = () => {
             updated_at,
             user:users(display_name)
           )
-        `)
+        `,
+        )
         .eq('status', 'finished')
         .order('match_date', { ascending: true })
 

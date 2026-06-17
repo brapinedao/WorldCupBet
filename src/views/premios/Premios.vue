@@ -28,7 +28,6 @@
       </p>
 
       <div
-        v-if="isFirstPlaceRevealed"
         class="animate-fade-up flex flex-wrap justify-center gap-8"
         style="animation-delay: 0.3s"
       >
@@ -59,44 +58,31 @@
           ★ CAMPEÓN ★
         </span>
 
-        <template v-if="prize.isRevealed">
-          <span
-            class="animate-float"
-            :class="prize.place === 1 ? 'text-5xl' : 'text-4xl'"
-            :style="{ animationDelay: `${index * 0.3}s` }"
-          >
-            {{ prize.medal }}
-          </span>
-          <span class="text-xs font-semibold uppercase tracking-wider text-white/50">
-            {{ prize.badgeLabel }}
-          </span>
-          <h3 class="text-lg font-bold text-white">{{ prize.title }}</h3>
+        <span
+          class="animate-float"
+          :class="prize.place === 1 ? 'text-5xl' : 'text-4xl'"
+          :style="{ animationDelay: `${index * 0.3}s` }"
+        >
+          {{ prize.medal }}
+        </span>
+        <span class="text-xs font-semibold uppercase tracking-wider text-white/50">
+          {{ prize.badgeLabel }}
+        </span>
+        <h3 class="text-lg font-bold text-white">{{ prize.title }}</h3>
 
-          <div class="flex flex-col gap-1 rounded-xl bg-white/5 px-4 py-3 text-sm text-white/70">
-            <template v-for="(perk, perkIndex) in prize.perks" :key="perk">
-              <span>{{ perk }}</span>
-              <span v-if="perkIndex < prize.perks.length - 1" class="text-xs text-white/30">
-                — o —
-              </span>
-            </template>
-          </div>
-        </template>
-
-        <template v-else>
-          <span class="text-4xl opacity-30">🔒</span>
-          <span class="text-xs font-semibold uppercase tracking-wider text-white/40">
-            {{ prize.badgeLabel }}
-          </span>
-          <p class="text-sm text-white/50">
-            Se revela el <span class="font-semibold text-gold-400/80">{{ prize.revealLabel }}</span>
-          </p>
-        </template>
+        <div class="flex flex-col gap-1 rounded-xl bg-white/5 px-4 py-3 text-sm text-white/70">
+          <template v-for="(perk, perkIndex) in prize.perks" :key="perk">
+            <span>{{ perk }}</span>
+            <span v-if="perkIndex < prize.perks.length - 1" class="text-xs text-white/30">
+              — o —
+            </span>
+          </template>
+        </div>
       </GlassCard>
     </div>
 
     <!-- Nota -->
     <GlassCard
-      v-if="isFirstPlaceRevealed"
       class="animate-fade-up border-gold-400/15 p-5 text-center text-sm leading-relaxed text-white/70"
       style="animation-delay: 0.85s"
     >
@@ -127,5 +113,5 @@ import GlassCard from '@/components/ui/GlassCard.vue'
 
 import usePremios from './Premios'
 
-const { prizes, stats, isFirstPlaceRevealed, handleGoToPredictions } = usePremios()
+const { prizes, stats, handleGoToPredictions } = usePremios()
 </script>

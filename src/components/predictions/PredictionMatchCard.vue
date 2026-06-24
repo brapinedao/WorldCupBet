@@ -97,7 +97,7 @@ const emit = defineEmits<{
 const homeScoreInput = ref(props.prediction?.predicted_home_score?.toString() ?? '')
 const awayScoreInput = ref(props.prediction?.predicted_away_score?.toString() ?? '')
 
-const LOCK_BEFORE_KICKOFF_MS = 60 * 60 * 1000
+const LOCK_BEFORE_KICKOFF_MS = 10 * 60 * 1000
 
 const hasResult = computed(() => props.match.status === 'finished')
 

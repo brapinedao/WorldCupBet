@@ -93,9 +93,21 @@ const useAllPredictionsView = () => {
   const isLoading = ref(true)
   const isGeneratingAudit = ref(false)
   const searchQuery = ref('')
+  const selectedMatchId = ref<number | null>(null)
 
-  const nextMatch = computed<IMatch | null>(
-    () => matches.value.find((match) => match.status === 'scheduled') ?? null,
+  // matches ya viene ordenado por match_date asc: el primer partido scheduled marca el
+  // próximo horario, y puede haber varios partidos arrancando a esa misma hora.
+  const nextMatches = computed<IMatch[]>(() => {
+    const next = matches.value.find((match) => match.status === 'scheduled')
+    if (!next) return []
+
+    return matches.value.filter(
+      (match) => match.status === 'scheduled' && match.match_date === next.match_date,
+    )
+  })
+
+  const selectedMatch = computed<IMatch | null>(
+    () => nextMatches.value.find((match) => match.id === selectedMatchId.value) ?? null,
   )
 
   const sortedPredictions = computed(() =>
@@ -116,6 +128,12 @@ const useAllPredictionsView = () => {
     )
   })
 
+  const handleSelectMatch = async (matchId: number): Promise<void> => {
+    selectedMatchId.value = matchId
+    searchQuery.value = ''
+    await _getMatchPredictions(matchId)
+  }
+
   const handleAuditDownload = async (): Promise<void> => {
     isGeneratingAudit.value = true
     const finishedMatches = await _getAuditPredictions()
@@ -126,15 +144,19 @@ const useAllPredictionsView = () => {
   onMounted(async () => {
     await _getListMatches()
 
-    if (nextMatch.value) {
-      await _getMatchPredictions(nextMatch.value.id)
+    const firstMatch = nextMatches.value[0]
+    if (firstMatch) {
+      await handleSelectMatch(firstMatch.id)
     }
 
     isLoading.value = false
   })
 
   return {
-    nextMatch,
+    nextMatches,
+    selectedMatch,
+    selectedMatchId,
+    handleSelectMatch,
     predictions: filteredPredictions,
     hasPredictions,
     searchQuery,

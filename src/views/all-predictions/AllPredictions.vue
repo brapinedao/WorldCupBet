@@ -7,13 +7,30 @@
 
     <p v-if="isLoading" class="text-center text-white/60">Cargando pronósticos...</p>
 
-    <template v-else-if="nextMatch">
+    <template v-else-if="selectedMatch">
+      <div v-if="nextMatches.length > 1" class="flex gap-2 overflow-x-auto">
+        <button
+          v-for="match in nextMatches"
+          :key="match.id"
+          type="button"
+          class="whitespace-nowrap rounded-xl px-3 py-2 text-sm font-medium transition"
+          :class="
+            selectedMatchId === match.id
+              ? 'bg-gold-cta text-navy-950'
+              : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'
+          "
+          @click="handleSelectMatch(match.id)"
+        >
+          {{ match.home_team.code }} vs {{ match.away_team.code }}
+        </button>
+      </div>
+
       <GlassCard class="p-6">
         <MatchCard
-          :home-team="nextMatch.home_team"
-          :away-team="nextMatch.away_team"
-          :match-date="nextMatch.match_date"
-          :venue="nextMatch.venue"
+          :home-team="selectedMatch.home_team"
+          :away-team="selectedMatch.away_team"
+          :match-date="selectedMatch.match_date"
+          :venue="selectedMatch.venue"
         />
       </GlassCard>
 
@@ -59,7 +76,10 @@ import MatchCard from '@/components/ui/MatchCard.vue'
 import useAllPredictionsView from './AllPredictions'
 
 const {
-  nextMatch,
+  nextMatches,
+  selectedMatch,
+  selectedMatchId,
+  handleSelectMatch,
   predictions,
   hasPredictions,
   searchQuery,

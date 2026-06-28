@@ -15,6 +15,7 @@ export interface IMatch {
   venue: string | null
   home_score: number | null
   away_score: number | null
+  winner_team_id: number | null
   home_team: ITeam
   away_team: ITeam
 }

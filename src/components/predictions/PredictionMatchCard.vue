@@ -55,9 +55,40 @@
           Tu pronóstico: {{ prediction!.predicted_home_score }} -
           {{ prediction!.predicted_away_score }}
         </span>
+        <span v-if="isKnockout && hasPrediction && isLocked" class="text-[11px] text-white/40">
+          Avanza (tu pronóstico): {{ predictedWinnerName }}
+          <span v-if="hasResult">{{ isWinnerPickCorrect ? '✓' : '✗' }}</span>
+        </span>
       </div>
 
       <TeamBadge :name="match.away_team.name" :flag-url="match.away_team.flag_url" />
+    </div>
+
+    <div v-if="isKnockout && !isLocked" class="flex gap-2">
+      <button
+        type="button"
+        class="flex-1 rounded-lg px-2 py-1.5 text-xs font-medium transition"
+        :class="
+          winnerTeamIdInput === match.home_team.id
+            ? 'bg-gold-cta text-navy-950'
+            : 'bg-white/5 text-white/60 hover:bg-white/10'
+        "
+        @click="winnerTeamIdInput = match.home_team.id"
+      >
+        {{ match.home_team.code }} avanza
+      </button>
+      <button
+        type="button"
+        class="flex-1 rounded-lg px-2 py-1.5 text-xs font-medium transition"
+        :class="
+          winnerTeamIdInput === match.away_team.id
+            ? 'bg-gold-cta text-navy-950'
+            : 'bg-white/5 text-white/60 hover:bg-white/10'
+        "
+        @click="winnerTeamIdInput = match.away_team.id"
+      >
+        {{ match.away_team.code }} avanza
+      </button>
     </div>
 
     <template v-if="!isLocked">
@@ -66,6 +97,9 @@
       </BaseButton>
       <p v-if="hasInvalidInput" class="text-center text-[11px] text-red-400">
         El marcador debe ser un número entre 0 y 20
+      </p>
+      <p v-else-if="needsWinnerPick" class="text-center text-[11px] text-red-400">
+        Selecciona qué equipo avanza
       </p>
       <p v-else-if="saveError" class="text-center text-[11px] text-red-400">{{ saveError }}</p>
     </template>
@@ -91,11 +125,19 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  save: [payload: { matchId: number; homeScore: number; awayScore: number }]
+  save: [
+    payload: {
+      matchId: number
+      homeScore: number
+      awayScore: number
+      predictedWinnerTeamId: number | null
+    },
+  ]
 }>()
 
 const homeScoreInput = ref(props.prediction?.predicted_home_score?.toString() ?? '')
 const awayScoreInput = ref(props.prediction?.predicted_away_score?.toString() ?? '')
+const winnerTeamIdInput = ref(props.prediction?.predicted_winner_team_id ?? null)
 
 const LOCK_BEFORE_KICKOFF_MS = 10 * 60 * 1000
 
@@ -108,6 +150,19 @@ const isLocked = computed(
 )
 
 const hasPrediction = computed(() => !!props.prediction)
+
+const isKnockout = computed(() => props.match.stage !== 'group')
+
+const predictedWinnerName = computed(() => {
+  if (winnerTeamIdInput.value === props.match.home_team.id) return props.match.home_team.name
+  if (winnerTeamIdInput.value === props.match.away_team.id) return props.match.away_team.name
+  return '—'
+})
+
+const isWinnerPickCorrect = computed(
+  () =>
+    hasResult.value && props.prediction?.predicted_winner_team_id === props.match.winner_team_id,
+)
 
 const pointsBadge = computed((): number | null => {
   if (hasResult.value) {
@@ -128,8 +183,13 @@ const isValidScore = (value: string): boolean => {
 
 const isEmptyOrValidScore = (value: string): boolean => value.trim() === '' || isValidScore(value)
 
+const needsWinnerPick = computed(() => isKnockout.value && winnerTeamIdInput.value === null)
+
 const canSave = computed(
-  () => isValidScore(homeScoreInput.value) && isValidScore(awayScoreInput.value),
+  () =>
+    isValidScore(homeScoreInput.value) &&
+    isValidScore(awayScoreInput.value) &&
+    !needsWinnerPick.value,
 )
 
 const hasInvalidInput = computed(
@@ -152,6 +212,11 @@ const handleSave = (): void => {
   const homeScore = Number(homeScoreInput.value)
   const awayScore = Number(awayScoreInput.value)
 
-  emit('save', { matchId: props.match.id, homeScore, awayScore })
+  emit('save', {
+    matchId: props.match.id,
+    homeScore,
+    awayScore,
+    predictedWinnerTeamId: isKnockout.value ? winnerTeamIdInput.value : null,
+  })
 }
 </script>

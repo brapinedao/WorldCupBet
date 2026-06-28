@@ -37,6 +37,7 @@ const useMatchResultsView = () => {
   const selectedMatchId = ref('')
   const homeScoreInput = ref('')
   const awayScoreInput = ref('')
+  const winnerTeamIdInput = ref('')
 
   const pendingMatches = computed(() =>
     matches.value.filter(
@@ -52,15 +53,32 @@ const useMatchResultsView = () => {
   )
 
   const selectedMatch = computed<IMatch | null>(
-    () =>
-      pendingMatches.value.find((match) => String(match.id) === selectedMatchId.value) ?? null,
+    () => pendingMatches.value.find((match) => String(match.id) === selectedMatchId.value) ?? null,
   )
+
+  const isKnockout = computed(() => selectedMatch.value?.stage !== 'group')
+
+  const winnerOptions = computed(() => {
+    if (!selectedMatch.value) return []
+
+    return [
+      {
+        value: String(selectedMatch.value.home_team.id),
+        label: selectedMatch.value.home_team.name,
+      },
+      {
+        value: String(selectedMatch.value.away_team.id),
+        label: selectedMatch.value.away_team.name,
+      },
+    ]
+  })
 
   const canSave = computed(
     () =>
       !!selectedMatch.value &&
       isValidScore(homeScoreInput.value) &&
-      isValidScore(awayScoreInput.value),
+      isValidScore(awayScoreInput.value) &&
+      (!isKnockout.value || winnerTeamIdInput.value !== ''),
   )
 
   const hasInvalidInput = computed(
@@ -70,6 +88,7 @@ const useMatchResultsView = () => {
   watch(selectedMatchId, () => {
     homeScoreInput.value = ''
     awayScoreInput.value = ''
+    winnerTeamIdInput.value = ''
   })
 
   const handleSave = async (): Promise<void> => {
@@ -83,8 +102,13 @@ const useMatchResultsView = () => {
     const awayScore = Number(awayScoreInput.value)
 
     let winnerTeamId: number | null = null
-    if (homeScore > awayScore) winnerTeamId = selectedMatch.value.home_team.id
-    else if (awayScore > homeScore) winnerTeamId = selectedMatch.value.away_team.id
+    if (isKnockout.value) {
+      winnerTeamId = Number(winnerTeamIdInput.value)
+    } else if (homeScore > awayScore) {
+      winnerTeamId = selectedMatch.value.home_team.id
+    } else if (awayScore > homeScore) {
+      winnerTeamId = selectedMatch.value.away_team.id
+    }
 
     const success = await _updateMatchResult({
       matchId: selectedMatch.value.id,
@@ -118,6 +142,9 @@ const useMatchResultsView = () => {
     matchOptions,
     selectedMatchId,
     selectedMatch,
+    isKnockout,
+    winnerOptions,
+    winnerTeamIdInput,
     homeScoreInput,
     awayScoreInput,
     canSave,

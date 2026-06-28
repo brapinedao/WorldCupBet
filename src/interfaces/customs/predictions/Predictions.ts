@@ -3,12 +3,14 @@ export interface IPrediction {
   match_id: number
   predicted_home_score: number
   predicted_away_score: number
+  predicted_winner_team_id: number | null
   points: number | null
 }
 
 export interface IUserPrediction {
   predicted_home_score: number
   predicted_away_score: number
+  predicted_winner_team_id: number | null
   user: {
     display_name: string
   }

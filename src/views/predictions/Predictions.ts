@@ -92,6 +92,7 @@ const usePredictionsView = () => {
     matchId: number
     homeScore: number
     awayScore: number
+    predictedWinnerTeamId: number | null
   }): Promise<void> => {
     if (!userId.value) return
 
@@ -103,6 +104,7 @@ const usePredictionsView = () => {
       matchId: payload.matchId,
       predictedHomeScore: payload.homeScore,
       predictedAwayScore: payload.awayScore,
+      predictedWinnerTeamId: payload.predictedWinnerTeamId,
     })
 
     if (!success) {

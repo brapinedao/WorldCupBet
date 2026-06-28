@@ -31,6 +31,13 @@
         />
       </div>
 
+      <BaseSelect
+        v-if="selectedMatch && isKnockout"
+        v-model="winnerTeamIdInput"
+        label="¿Quién avanza?"
+        :options="winnerOptions"
+      />
+
       <BaseButton :loading="isSaving" :disabled="!canSave" @click="handleSave">
         Guardar resultado
       </BaseButton>
@@ -63,6 +70,9 @@ const {
   matchOptions,
   selectedMatchId,
   selectedMatch,
+  isKnockout,
+  winnerOptions,
+  winnerTeamIdInput,
   homeScoreInput,
   awayScoreInput,
   canSave,

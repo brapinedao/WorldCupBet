@@ -12,6 +12,11 @@ const POINTS_RULES = [
   },
   { points: 1, description: 'Tu pronóstico no acierta el resultado del partido.' },
   { points: 0, description: 'No guardaste un pronóstico para ese partido.' },
+  {
+    points: 2,
+    description:
+      'Bonus en fases de eliminación directa: aciertas qué equipo avanza, sumado a los puntos anteriores (incluso si el marcador termina en empate y se define por penales).',
+  },
 ] as const
 
 const useRankingsView = () => {

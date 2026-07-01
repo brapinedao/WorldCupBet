@@ -93,6 +93,11 @@ const useGroupsView = () => {
     return map
   })
 
+  // matches ya viene ordenado por match_date asc desde el store.
+  const knockoutMatches = computed(() =>
+    matches.value.filter((match) => match.stage === 'round_of_16'),
+  )
+
   onMounted(async () => {
     await Promise.all([_getListTeams(), _getListMatches()])
     isLoading.value = false
@@ -101,6 +106,7 @@ const useGroupsView = () => {
   return {
     groupNames,
     standingsByGroup,
+    knockoutMatches,
     isLoading,
   }
 }

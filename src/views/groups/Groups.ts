@@ -98,6 +98,10 @@ const useGroupsView = () => {
     matches.value.filter((match) => match.stage === 'round_of_16'),
   )
 
+  const octavosMatches = computed(() =>
+    matches.value.filter((match) => match.stage === 'round_of_8'),
+  )
+
   onMounted(async () => {
     await Promise.all([_getListTeams(), _getListMatches()])
     isLoading.value = false
@@ -107,6 +111,7 @@ const useGroupsView = () => {
     groupNames,
     standingsByGroup,
     knockoutMatches,
+    octavosMatches,
     isLoading,
   }
 }

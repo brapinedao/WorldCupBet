@@ -1,6 +1,10 @@
 <template>
   <div class="flex flex-col gap-6">
-    <KnockoutBracket v-if="!isLoading && knockoutMatches.length > 0" :matches="knockoutMatches" />
+    <KnockoutBracket
+      v-if="!isLoading && knockoutMatches.length > 0"
+      :matches="knockoutMatches"
+      :octavos-matches="octavosMatches"
+    />
 
     <h1 class="text-2xl font-bold">Equipos y Grupos</h1>
 
@@ -51,5 +55,5 @@ import KnockoutBracket from '@/components/groups/KnockoutBracket.vue'
 
 import useGroupsView from './Groups'
 
-const { groupNames, standingsByGroup, knockoutMatches, isLoading } = useGroupsView()
+const { groupNames, standingsByGroup, knockoutMatches, octavosMatches, isLoading } = useGroupsView()
 </script>

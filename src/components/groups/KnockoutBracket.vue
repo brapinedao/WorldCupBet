@@ -117,6 +117,7 @@ interface IBracketPairConfig {
 const props = defineProps<{
   matches: IMatch[]
   octavosMatches: IMatch[]
+  quarterfinalMatches: IMatch[]
 }>()
 
 // Cruces oficiales de octavos (llave fija del torneo, no se puede derivar por fecha ni por id):
@@ -138,12 +139,21 @@ const OCTAVOS_STRUCTURE: IBracketPairConfig[] = [
 // Cruces oficiales de cuartos: cada slot combina los ganadores de dos partidos de octavos
 // específicos, agrupando de a dos las 8 entradas de OCTAVOS_STRUCTURE en su mismo orden (así
 // se derivó: Marruecos y Francia, ambos ganadores de sus octavos, quedaron emparejados en el
-// primer cruce de cuartos). Todavía no hay horario oficial confirmado para esta ronda.
+// primer cruce de cuartos). scheduledAt es la fecha/hora real ya confirmada (hora Colombia ->
+// UTC +5h), igual que en OCTAVOS_STRUCTURE.
 const CUARTOS_STRUCTURE: IBracketPairConfig[] = [
-  { feederA: ['CAN', 'MAR'], feederB: ['PAR', 'FRA'] },
-  { feederA: ['BEL', 'USA'], feederB: ['ESP', 'POR'] },
-  { feederA: ['BRA', 'NOR'], feederB: ['MEX', 'ENG'] },
-  { feederA: ['SUI', 'COL'], feederB: ['ARG', 'EGY'] },
+  { feederA: ['CAN', 'MAR'], feederB: ['PAR', 'FRA'], scheduledAt: '2026-07-09T20:00:00+00:00' },
+  { feederA: ['BEL', 'USA'], feederB: ['ESP', 'POR'], scheduledAt: '2026-07-10T19:00:00+00:00' },
+  { feederA: ['BRA', 'NOR'], feederB: ['MEX', 'ENG'], scheduledAt: '2026-07-11T21:00:00+00:00' },
+  { feederA: ['SUI', 'COL'], feederB: ['ARG', 'EGY'], scheduledAt: '2026-07-12T01:00:00+00:00' },
+]
+
+// Mismo patrón un nivel arriba: agrupa de a dos, en orden, las 4 entradas de
+// CUARTOS_STRUCTURE (semifinal 1 = cuartos 1+2, semifinal 2 = cuartos 3+4). Los códigos
+// identifican los partidos reales de cuartos ya insertados (quarterfinal_confirmed.sql).
+const SEMIS_STRUCTURE: IBracketPairConfig[] = [
+  { feederA: ['FRA', 'MAR'], feederB: ['ESP', 'BEL'] },
+  { feederA: ['NOR', 'ENG'], feederB: ['ARG', 'SUI'] },
 ]
 
 const findMatchByTeamCodes = (matches: IMatch[], codes: [string, string]): IMatch | undefined =>
@@ -208,8 +218,7 @@ const secondRound = computed<IBracketRound>(() => ({
 }))
 
 // Igual que Octavos pero un nivel arriba: los ganadores de octavos (props.octavosMatches) se
-// van colocando en su cruce de cuartos correspondiente. Semifinal/Final siguen sin llave
-// definida — placeholders sin datos.
+// van colocando en su cruce de cuartos correspondiente.
 const thirdRound = computed<IBracketRound>(() => ({
   label: 'Cuartos',
   slots: CUARTOS_STRUCTURE.map((pair) => ({
@@ -219,11 +228,23 @@ const thirdRound = computed<IBracketRound>(() => ({
   })),
 }))
 
+// Igual patrón, un nivel más arriba: los ganadores de cuartos (props.quarterfinalMatches) se
+// van colocando en su cruce de semifinal correspondiente. Final sigue sin llave definida —
+// placeholder sin datos.
+const fourthRound = computed<IBracketRound>(() => ({
+  label: 'Semifinal',
+  slots: SEMIS_STRUCTURE.map((pair) => ({
+    home: resolveAdvancingTeam(findMatchByTeamCodes(props.quarterfinalMatches, pair.feederA)),
+    away: resolveAdvancingTeam(findMatchByTeamCodes(props.quarterfinalMatches, pair.feederB)),
+    scheduledAt: pair.scheduledAt,
+  })),
+}))
+
 const rounds = computed<IBracketRound[]>(() => [
   firstRound.value,
   secondRound.value,
   thirdRound.value,
-  buildPlaceholderRound('Semifinal', 2),
+  fourthRound.value,
   buildPlaceholderRound('Final', 1),
 ])
 

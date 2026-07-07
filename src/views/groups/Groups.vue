@@ -4,6 +4,7 @@
       v-if="!isLoading && knockoutMatches.length > 0"
       :matches="knockoutMatches"
       :octavos-matches="octavosMatches"
+      :quarterfinal-matches="quarterfinalMatches"
     />
 
     <h1 class="text-2xl font-bold">Equipos y Grupos</h1>
@@ -55,5 +56,12 @@ import KnockoutBracket from '@/components/groups/KnockoutBracket.vue'
 
 import useGroupsView from './Groups'
 
-const { groupNames, standingsByGroup, knockoutMatches, octavosMatches, isLoading } = useGroupsView()
+const {
+  groupNames,
+  standingsByGroup,
+  knockoutMatches,
+  octavosMatches,
+  quarterfinalMatches,
+  isLoading,
+} = useGroupsView()
 </script>

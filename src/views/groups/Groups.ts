@@ -93,6 +93,19 @@ const useGroupsView = () => {
     return map
   })
 
+  // matches ya viene ordenado por match_date asc desde el store.
+  const knockoutMatches = computed(() =>
+    matches.value.filter((match) => match.stage === 'round_of_16'),
+  )
+
+  const octavosMatches = computed(() =>
+    matches.value.filter((match) => match.stage === 'round_of_8'),
+  )
+
+  const quarterfinalMatches = computed(() =>
+    matches.value.filter((match) => match.stage === 'quarterfinal'),
+  )
+
   onMounted(async () => {
     await Promise.all([_getListTeams(), _getListMatches()])
     isLoading.value = false
@@ -101,6 +114,9 @@ const useGroupsView = () => {
   return {
     groupNames,
     standingsByGroup,
+    knockoutMatches,
+    octavosMatches,
+    quarterfinalMatches,
     isLoading,
   }
 }

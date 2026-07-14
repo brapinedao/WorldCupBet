@@ -1,5 +1,12 @@
 <template>
   <div class="flex flex-col gap-6">
+    <KnockoutBracket
+      v-if="!isLoading && knockoutMatches.length > 0"
+      :matches="knockoutMatches"
+      :octavos-matches="octavosMatches"
+      :quarterfinal-matches="quarterfinalMatches"
+    />
+
     <h1 class="text-2xl font-bold">Equipos y Grupos</h1>
 
     <p v-if="isLoading" class="text-center text-white/60">Cargando equipos...</p>
@@ -45,8 +52,16 @@
 
 <script setup lang="ts">
 import GlassCard from '@/components/ui/GlassCard.vue'
+import KnockoutBracket from '@/components/groups/KnockoutBracket.vue'
 
 import useGroupsView from './Groups'
 
-const { groupNames, standingsByGroup, isLoading } = useGroupsView()
+const {
+  groupNames,
+  standingsByGroup,
+  knockoutMatches,
+  octavosMatches,
+  quarterfinalMatches,
+  isLoading,
+} = useGroupsView()
 </script>

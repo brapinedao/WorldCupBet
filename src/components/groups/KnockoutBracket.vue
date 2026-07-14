@@ -151,9 +151,11 @@ const CUARTOS_STRUCTURE: IBracketPairConfig[] = [
 // Mismo patrón un nivel arriba: agrupa de a dos, en orden, las 4 entradas de
 // CUARTOS_STRUCTURE (semifinal 1 = cuartos 1+2, semifinal 2 = cuartos 3+4). Los códigos
 // identifican los partidos reales de cuartos ya insertados (quarterfinal_confirmed.sql).
+// scheduledAt es la fecha/hora real ya confirmada (hora Colombia -> UTC +5h), igual que en
+// las rondas anteriores.
 const SEMIS_STRUCTURE: IBracketPairConfig[] = [
-  { feederA: ['FRA', 'MAR'], feederB: ['ESP', 'BEL'] },
-  { feederA: ['NOR', 'ENG'], feederB: ['ARG', 'SUI'] },
+  { feederA: ['FRA', 'MAR'], feederB: ['ESP', 'BEL'], scheduledAt: '2026-07-14T19:00:00+00:00' },
+  { feederA: ['NOR', 'ENG'], feederB: ['ARG', 'SUI'], scheduledAt: '2026-07-15T19:00:00+00:00' },
 ]
 
 const findMatchByTeamCodes = (matches: IMatch[], codes: [string, string]): IMatch | undefined =>
@@ -252,7 +254,7 @@ const formatSlotDate = (isoDate: string): string =>
   new Date(isoDate).toLocaleString('es-CO', {
     weekday: 'short',
     day: '2-digit',
-    month: '2-digit',
+    month: 'short',
     hour: '2-digit',
     minute: '2-digit',
   })

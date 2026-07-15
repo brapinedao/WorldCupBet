@@ -65,19 +65,67 @@
 
         <div class="flex w-44 shrink-0 flex-col items-center justify-center gap-3">
           <span class="animate-float text-4xl" aria-hidden="true">🏆</span>
-          <GlassCard class="w-full p-4 text-center text-sm text-white/30">?</GlassCard>
+          <h3 class="text-center text-xs font-semibold uppercase tracking-wider text-gold-400">
+            Campeón Mundial
+          </h3>
+          <GlassCard class="flex w-full flex-col items-center gap-2 p-4">
+            <img
+              v-if="championTeam.flagUrl"
+              :src="championTeam.flagUrl"
+              :alt="championTeam.name"
+              class="h-8 w-8 rounded-full object-cover ring-1 ring-white/10"
+            />
+            <span
+              v-else
+              class="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-sm text-white/40"
+            >
+              ?
+            </span>
+            <span
+              class="text-sm font-semibold"
+              :class="championTeam.name === 'A definir' ? 'text-white/30' : 'text-gold-400'"
+            >
+              {{ championTeam.name }}
+            </span>
+          </GlassCard>
         </div>
       </div>
     </div>
 
-    <GlassCard class="mx-auto w-full max-w-xs p-3 text-center">
-      <h3 class="mb-2 text-xs font-semibold uppercase tracking-wider text-white/50">
-        Tercer Puesto
-      </h3>
-      <div class="flex items-center justify-center gap-2 text-xs text-white/30">
-        <span>?</span>
-        <span>vs</span>
-        <span>?</span>
+    <GlassCard class="mx-auto flex w-full max-w-xs flex-col gap-2 p-3">
+      <div class="flex items-center justify-between text-[10px] text-white/40">
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-white/50">Tercer Puesto</h3>
+        <span v-if="thirdPlaceSlot.scheduledAt">{{
+          formatSlotDate(thirdPlaceSlot.scheduledAt)
+        }}</span>
+      </div>
+
+      <div class="flex items-center justify-center gap-3">
+        <div
+          v-for="(team, teamIndex) in [thirdPlaceSlot.home, thirdPlaceSlot.away]"
+          :key="teamIndex"
+          class="flex items-center gap-2"
+        >
+          <img
+            v-if="team.flagUrl"
+            :src="team.flagUrl"
+            :alt="team.name"
+            class="h-5 w-5 shrink-0 rounded-full object-cover ring-1 ring-white/10"
+          />
+          <span
+            v-else
+            class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/10 text-[10px] text-white/40"
+          >
+            ?
+          </span>
+          <span
+            class="text-xs"
+            :class="team.name === 'A definir' ? 'text-white/30' : 'text-white/70'"
+          >
+            {{ team.name }}
+          </span>
+          <span v-if="teamIndex === 0" class="text-xs text-white/40">vs</span>
+        </div>
       </div>
     </GlassCard>
   </div>
@@ -118,6 +166,8 @@ const props = defineProps<{
   matches: IMatch[]
   octavosMatches: IMatch[]
   quarterfinalMatches: IMatch[]
+  semifinalMatches: IMatch[]
+  finalMatches: IMatch[]
 }>()
 
 // Cruces oficiales de octavos (llave fija del torneo, no se puede derivar por fecha ni por id):
@@ -158,6 +208,16 @@ const SEMIS_STRUCTURE: IBracketPairConfig[] = [
   { feederA: ['NOR', 'ENG'], feederB: ['ARG', 'SUI'], scheduledAt: '2026-07-15T19:00:00+00:00' },
 ]
 
+// La final y el partido por el tercer puesto se juegan entre los mismos 4 equipos (ganadores y
+// perdedores de las 2 semifinales), así que comparten los mismos feeders — solo cambia si se
+// resuelve el ganador (Final) o el perdedor (Tercer Puesto) de cada semifinal, y el horario.
+const FINAL_MATCHUP: IBracketPairConfig = {
+  feederA: ['FRA', 'ESP'],
+  feederB: ['ENG', 'ARG'],
+  scheduledAt: '2026-07-19T19:00:00+00:00',
+}
+const THIRD_PLACE_SCHEDULED_AT = '2026-07-18T21:00:00+00:00'
+
 const findMatchByTeamCodes = (matches: IMatch[], codes: [string, string]): IMatch | undefined =>
   matches.find(
     (match) =>
@@ -174,13 +234,16 @@ const resolveAdvancingTeam = (match: IMatch | undefined): ISlotTeam => {
   return { name: winner.name, flagUrl: winner.flag_url, score: null, isWinner: false }
 }
 
-const buildPlaceholderRound = (label: string, slotCount: number): IBracketRound => ({
-  label,
-  slots: Array.from({ length: slotCount }, () => ({
-    home: { name: 'A definir', flagUrl: null, score: null, isWinner: false },
-    away: { name: 'A definir', flagUrl: null, score: null, isWinner: false },
-  })),
-})
+// Para el partido por el tercer puesto: el equipo que juega ahí es el que PERDIÓ la semifinal,
+// no el que avanzó.
+const resolveLosingTeam = (match: IMatch | undefined): ISlotTeam => {
+  if (!match || match.status !== 'finished' || match.winner_team_id === null) {
+    return { name: 'A definir', flagUrl: null, score: null, isWinner: false }
+  }
+
+  const loser = match.winner_team_id === match.home_team.id ? match.away_team : match.home_team
+  return { name: loser.name, flagUrl: loser.flag_url, score: null, isWinner: false }
+}
 
 // Ordena los 16 partidos según la llave oficial (feederA seguido de feederB de cada cruce de
 // octavos), no por match_date, para que las cajas emparejadas queden visualmente adyacentes.
@@ -231,8 +294,7 @@ const thirdRound = computed<IBracketRound>(() => ({
 }))
 
 // Igual patrón, un nivel más arriba: los ganadores de cuartos (props.quarterfinalMatches) se
-// van colocando en su cruce de semifinal correspondiente. Final sigue sin llave definida —
-// placeholder sin datos.
+// van colocando en su cruce de semifinal correspondiente.
 const fourthRound = computed<IBracketRound>(() => ({
   label: 'Semifinal',
   slots: SEMIS_STRUCTURE.map((pair) => ({
@@ -242,12 +304,40 @@ const fourthRound = computed<IBracketRound>(() => ({
   })),
 }))
 
+// Los ganadores de semifinal (props.semifinalMatches) se van colocando en la final.
+const fifthRound = computed<IBracketRound>(() => ({
+  label: 'Final',
+  slots: [
+    {
+      home: resolveAdvancingTeam(
+        findMatchByTeamCodes(props.semifinalMatches, FINAL_MATCHUP.feederA),
+      ),
+      away: resolveAdvancingTeam(
+        findMatchByTeamCodes(props.semifinalMatches, FINAL_MATCHUP.feederB),
+      ),
+      scheduledAt: FINAL_MATCHUP.scheduledAt,
+    },
+  ],
+}))
+
+// El partido por el tercer puesto enfrenta a los perdedores de ambas semifinales.
+const thirdPlaceSlot = computed<IBracketSlot>(() => ({
+  home: resolveLosingTeam(findMatchByTeamCodes(props.semifinalMatches, FINAL_MATCHUP.feederA)),
+  away: resolveLosingTeam(findMatchByTeamCodes(props.semifinalMatches, FINAL_MATCHUP.feederB)),
+  scheduledAt: THIRD_PLACE_SCHEDULED_AT,
+}))
+
+// El campeón es el ganador del partido real de la final (props.finalMatches, ya existe como
+// fila en `matches` con stage === 'final' — a diferencia de las demás rondas, no se resuelve
+// por feeders porque la final ya es un partido real, no un cruce calculado).
+const championTeam = computed<ISlotTeam>(() => resolveAdvancingTeam(props.finalMatches[0]))
+
 const rounds = computed<IBracketRound[]>(() => [
   firstRound.value,
   secondRound.value,
   thirdRound.value,
   fourthRound.value,
-  buildPlaceholderRound('Final', 1),
+  fifthRound.value,
 ])
 
 const formatSlotDate = (isoDate: string): string =>

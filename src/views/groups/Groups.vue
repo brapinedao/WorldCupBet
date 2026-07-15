@@ -5,6 +5,8 @@
       :matches="knockoutMatches"
       :octavos-matches="octavosMatches"
       :quarterfinal-matches="quarterfinalMatches"
+      :semifinal-matches="semifinalMatches"
+      :final-matches="finalMatches"
     />
 
     <h1 class="text-2xl font-bold">Equipos y Grupos</h1>
@@ -62,6 +64,8 @@ const {
   knockoutMatches,
   octavosMatches,
   quarterfinalMatches,
+  semifinalMatches,
+  finalMatches,
   isLoading,
 } = useGroupsView()
 </script>

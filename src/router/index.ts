@@ -47,6 +47,7 @@ const router = createRouter({
           path: 'pronosticos-todos',
           name: 'AllPredictions',
           component: () => import('@/views/all-predictions/AllPredictions.vue'),
+          meta: { allowedUsernames: ['brianpineda19', 'fabiovelazco'] },
         },
         {
           path: 'resultados',
